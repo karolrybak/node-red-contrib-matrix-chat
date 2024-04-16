@@ -102,13 +102,17 @@ module.exports = function(RED) {
                     if(msg.encrypted) {
                         msg.url = node.server.matrixClient.mxcUrlToHttp(msg.content.file.url);
                         msg.mxc_url = msg.content.file.url;
-                        msg.thumbnail_url = node.server.matrixClient.mxcUrlToHttp(msg.content.info.thumbnail_file.url);
-                        msg.thumbnail_mxc_url = msg.content.info.thumbnail_file.url;
+                        if(msg.content.info.thumbnail_file) {
+                            msg.thumbnail_url = node.server.matrixClient.mxcUrlToHttp(msg.content.info.thumbnail_file.url);
+                            msg.thumbnail_mxc_url = msg.content.info.thumbnail_file.url;
+                        }
                     } else {
                         msg.url = node.server.matrixClient.mxcUrlToHttp(msg.content.url);
                         msg.mxc_url = msg.content.url;
-                        msg.thumbnail_url = node.server.matrixClient.mxcUrlToHttp(msg.content.info.thumbnail_url);
-                        msg.thumbnail_mxc_url = msg.content.info.thumbnail_url;
+                        if(msg.content.info.thumbnail_file) {
+                            msg.thumbnail_url = node.server.matrixClient.mxcUrlToHttp(msg.content.info.thumbnail_url);
+                            msg.thumbnail_mxc_url = msg.content.info.thumbnail_url;
+                        }
                     }
                     break;
 
