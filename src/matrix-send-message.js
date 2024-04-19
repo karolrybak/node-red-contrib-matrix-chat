@@ -12,6 +12,7 @@ module.exports = function(RED) {
         this.messageType = n.messageType;
         this.messageFormat = n.messageFormat;
         this.replaceMessage = n.replaceMessage;
+        this.messageInThread= n.messageInThread;
         this.message = n.message;
 
         // taken from https://github.com/matrix-org/synapse/blob/master/synapse/push/mailer.py
@@ -138,6 +139,20 @@ module.exports = function(RED) {
                     event_id: msg.eventId
                 };
                 content['body'] = ' * ' + content['body'];
+            }
+
+            if (node.messageInThread && !msg["m.relates_to"]?.event_id) {
+                const relatesId = msg.eventId;
+                content['thread_id'] = relatesId;
+                content["m.relates_to"] = {
+                    type: "m.thread",
+                    rel_type: "m.thread",
+                    event_id: relatesId,
+                    "m.in_reply_to": {
+                        "event_id": relatesId
+                    },
+                    is_falling_back: true
+                }
             }
 
             node.server.matrixClient.sendMessage(msg.topic, content)
